@@ -25,7 +25,7 @@ def cmd_hi(context, message):
 def main(event, context):
     # load all commands
     if not COMMANDS:
-        for name, func in globals():
+        for name, func in dict(globals()).items():
             if name.startswith('cmd_'):
                 COMMANDS[f'/{name}'] = func
 
