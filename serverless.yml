@@ -1,0 +1,32 @@
+app: svjtgbot
+service: svjtgbot
+tenant: arturtamborski
+
+
+provider:
+  name: aws
+  region: eu-west-1
+
+  stage: dev
+  runtime: python3.7
+
+  environment:
+    TOKEN: ${env:TOKEN}
+
+
+package:
+  include:
+    - bot.py
+  exclude:
+    - ./**
+
+
+functions:
+  main:
+    handler: bot.main
+
+    events:
+      - http:
+          path: ping
+          method: post
+          cors: yes
