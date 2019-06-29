@@ -19,7 +19,7 @@ First of all, export some variables, cuz they're useful.
 ```
 export AWS_ACCESS_KEY_ID=<AWS IAM USER KEY ID>
 export AWS_SECRET_ACCESS_KEY=<AWS IAM USER ACCESS KEY>
-export TOKEN=<TELEGRAM BOT TOKEN FROM BOTFATHER>
+export TG_TOKEN=<TELEGRAM BOT TOKEN FROM BOTFATHER>
 ```
 
 
