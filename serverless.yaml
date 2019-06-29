@@ -5,19 +5,19 @@ tenant: arturtamborski
 
 provider:
   name: aws
-  region: eu-west-1
+  region: ${env:AWS_REGION}
 
   stage: dev
   runtime: python3.7
 
   environment:
-    TOKEN: ${env:TOKEN}
+    TG_TOKEN: ${env:TG_TOKEN}
 
 
 package:
   include:
     - bot.py
-    - deps/**
+    - names.py
   exclude:
     - ./**
 
@@ -25,9 +25,8 @@ package:
 functions:
   main:
     handler: bot.main
-
     events:
       - http:
-          method: get
-          path: ping
+          path: main
+          method: post
           cors: yes
