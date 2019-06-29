@@ -1,49 +1,33 @@
-import os
-import sys
 import json
+from os import environ
+from random import randint
+from botocore.vendored import requests
 
-HOME = os.path.dirname(os.path.realpath(__file__))
-sys.path.append(os.path.join(HOME, 'deps'))
-
-import requests
-
-TOKEN = os.environ['TOKEN']
-BASE_URL = f'https://api.telegram.org/bot{TOKEN}'
-SEND_URL = f'{BASE_URL}/sendMessage'
-NOOP_CMD = lambda: {'statusCode': 200}
-COMMANDS = {}
+import names
 
 
-def cmd_pong(context, message):
-    return 'pong'
-
-
-def cmd_hi(context, message):
-    return 'Hi, ' + message['chat']['first_name']
+BASE_URL = 'https://api.telegram.org/bot' + environ['TG_TOKEN']
+SEND_URL = BASE_URL + '/sendMessage'
 
 
 def main(event, context):
-    # load all commands
-    if not COMMANDS:
-        for name, func in dict(globals()).items():
-            if name.startswith('cmd_'):
-                COMMANDS[f'/{name}'] = func
+    message = json.loads(event['body'])['message']
+    chat_id = message['chat']['id']
+    command = message['text']
 
-    # handle request
-    try:
-        message = json.loads(event['body'])['message']
-        command = message.split(' ')[0]
-        chat_id = message['chat']['id']
+    if command:
+        special_n = randint(0, len(names.special))
+        first_n = randint(0, len(names.first))
+        last_n = randint(0, len(names.last))
 
-        function = COMMANDS.get(command, NOOP_CMD)
-        response = function(context, message)
+        response = names.first[first_n] + ' ' + names.last[last_n]
+
+        if randint(0, 10) > 7:
+            response = names.special[special_n]
 
         requests.post(SEND_URL, {
             'chat_id': chat_id,
-            'text': response.encode('utf8'),
+            'text': response.encode('utf8')
         })
 
-    except Exception as e:
-        print(e)
-
-    return NOOP_CMD()
+    return {'statusCode': 200}
